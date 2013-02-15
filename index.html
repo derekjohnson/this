@@ -273,5 +273,35 @@ me.age();
 
 			<button>Run</button>
 		</section>
+
+		<script>
+			var create_script = function() {
+				var el = document.createElement('script');
+
+				var previous = this.previousSibling;
+				if(previous.nodeType === 3) {
+					previous = previous.previousSibling;
+				}
+
+				var previous_child = previous.childNodes[0];
+				if(previous_child.nodeType === 3) {
+					previous_child = previous.childNodes[1];
+				}
+
+				var code = previous_child.innerHTML;
+
+				el.appendChild(document.createTextNode(code));
+
+				document.body.appendChild(el);
+			}
+			,	buttons = document.getElementsByTagName('button')
+			,	i = 0
+			,	ii = buttons.length;
+			;
+
+			for(i; i<ii; i++) {
+				buttons[i].addEventListener('click', create_script, false);
+			}
+		</script>
 	</body>
 </html>
