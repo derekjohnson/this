@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+	<head>
+		<meta charset="utf-8">
+		<title>JavaScript this</title>
+		<link rel="stylesheet" href="style.css">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<script src="jquery-1.9.1.min.js"></script>
+	</head>
+
+	<body>
+		<nav>
+			<a href="index.html">Vanilla</a>
+			<a href="jquery-this.html">jQuery</a>
+		</nav>
+
+		<header>
+			<h1>WTF is this jQuery?</h1>
+
+			<p>In jQuery <code>this</code> refers to a <abbr title="Document Object Model">DOM</abbr> element or a jQuery object.</p>
+		</header>
+
+		<section>
+			<h2>A DOM element</h2>
+
+			<p>Here are two links with class "link": <a href="#0" class="link">link 1</a> <a href="#0" class="link">link 2</a></p>
+
+			<p>Using the jQuery <code>each</code> function to find them and using <code>this</code> inside a callback function references the DOM element.</p>
+
+			<p>Using <code>$(this)</code> returns an array which in this case only has one variable, therefore <code>$(this)[0] === this</code>.
+
+			<pre>
+				<code>
+jQuery('.link').each(function() {
+	console.log(this);
+	console.log($(this));
+	console.log($(this)[0]);
+});
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<section>
+			<h2>A jQuery object</h2>
+
+			<p>When using a custom jQuery function <code>this</code> is a jQuery object that has access to all the jQuery functions.</p>
+
+			<pre>
+				<code>
+jQuery.fn.foo = function() {
+	console.log(this);
+}
+
+jQuery.fn.foo();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<script>
+			var create_script = function() {
+				var el = document.createElement('script');
+
+				var previous = this.previousSibling;
+				if(previous.nodeType === 3) {
+					previous = previous.previousSibling;
+				}
+
+				var previous_child = previous.childNodes[0];
+				if(previous_child.nodeType === 3) {
+					previous_child = previous.childNodes[1];
+				}
+
+				var code = previous_child.innerHTML;
+
+				el.appendChild(document.createTextNode(code));
+
+				document.body.appendChild(el);
+			}
+			,	buttons = document.getElementsByTagName('button')
+			,	i = 0
+			,	ii = buttons.length;
+			;
+
+			for(i; i<ii; i++) {
+				buttons[i].addEventListener('click', create_script, false);
+			}
+		</script>
+	</body>
+</html>
