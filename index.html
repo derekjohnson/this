@@ -280,10 +280,10 @@ me.age();
 		</section>
 
 		<script>
-			var create_script = function() {
+			var create_script = function(button) {
 				var el = document.createElement('script');
 
-				var previous = this.previousSibling;
+				var previous = button.previousSibling;
 				if(previous.nodeType === 3) {
 					previous = previous.previousSibling;
 				}
