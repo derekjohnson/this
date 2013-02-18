@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+	<head>
+		<meta charset="utf-8">
+		<title>JavaScript this</title>
+		<link rel="stylesheet" href="style.css">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+	</head>
+
+	<body>
+		<nav>
+			<a href="index.html">Vanilla</a>
+			<a href="jquery-this.html">jQuery</a>
+		</nav>
+
+		<header>
+			<h1>WTF is this?</h1>
+
+			<p>One of my PDR objective is to explain <code>this</code> in JavaScript to my colleagues that doesn't make them "want to kill". This is my attempt.</p>
+
+			<p>Open the console before clicking/tapping any buttons or you will not see anything.</p>
+
+			<figure>
+				<blockquote>In many object-oriented programming languages, this (also called self or Me) is a keyword that is used in instance methods to refer to the object on which they are working.</blockquote>
+
+				<figcaption><a href="http://en.wikipedia.org/wiki/This_(computer_science)">http://en.wikipedia.org/wiki/This_(computer_science)</a></figcaption>
+			</figure>
+
+			<p>In JavaScript <code>this</code> refers to different objects depending on where and how it is used. I'll dive straight into examples to illustrate each use.</p>
+		</header>
+
+		<section>
+			<h2>In a normal function</h2>
+
+			<p>When used in a normal function <code>this</code> refers to the global or window object.</p>
+
+			<pre>
+				<code>
+(function() {
+	console.log(this);
+})();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<section>
+			<h2>In a normal function with <code>"use strict";</code></h2>
+
+			<p>When used in a normal function with strict mode turned on <code>this</code> is <code>undefined</code>.</p>
+
+			<pre>
+				<code>
+(function() {
+	"use strict";
+	console.log(this);
+})();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<section>
+			<h2>In a nested function</h2>
+
+			<p>Nesting a function doesn't mean <code>this</code> will refer to the parent function. It's still the global object.</p>
+
+			<pre>
+				<code>
+(function() {
+	var nested_function = function() {
+		console.log(this);
+	}
+
+	nested_function();
+})();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<section>
+			<h2>In a nested function with <code>"use strict";</code></h2>
+
+			<p>Again, this is the same as a regular function with strict mode turned on, it is <code>undefined</code>.</p>
+
+			<pre>
+				<code>
+(function() {
+	"use strict";
+
+	var sixth_function = function() {
+		console.log(this);
+	}
+
+	sixth_function();
+})();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<section>
+			<h2>In an object method</h2>
+
+			<p>When <code>this</code> is used in a method of an object it references the object.</p>
+
+			<pre>
+				<code>
+var firstObject = {
+	first_method: function() {
+		console.log(this);
+	}
+};
+
+firstObject.first_method();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<section>
+			<h2>In a function nested in an object method</h2>
+
+			<p>Being nested in an object method does not make a function special. It's still a regular function therefore will reference the global object or be <code>undefined</code> if strict mode is turned on.</p>
+
+			<pre>
+				<code>
+var secondObject = {
+	second_method: function() {
+		var nested_function = function() {
+			console.log(this);
+		}
+
+		nested_function();
+	}
+}
+
+secondObject.second_method();
+				</code>
+			</pre>
+
+			<button>Run</button>
+
+			<p>If there was no way round this it would be very annoying, but thankfully there is an easy way round it&mdash;just assign <code>this</code> to a variable and use it instead.</p>
+
+			<pre>
+				<code>
+var secondObject = {
+	second_method: function() {
+		var that = this;
+		var nested_function = function() {
+			console.log(that);
+		}
+
+		nested_function();
+	}
+}
+
+secondObject.second_method();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<section>
+			<h2>In the <code>apply()</code> or <code>call()</code> method of a function</h2>
+
+			<p>When using <code>apply()</code> or <code>call()</code> the first parameter defines what <code>this</code> is, so any object can be referenced.</p>
+
+			<pre>
+				<code>
+var applied_function = function() {
+	console.log(this);
+}
+
+var fourthObject = {};
+
+applied_function.apply(fourthObject);
+				</code>
+			</pre>
+
+			<button>Run</button>
+
+			<pre>
+				<code>
+var called_function = function() {
+	console.log(this);
+}
+
+var fourthObject = {};
+
+called_function.call(fourthObject);
+				</code>
+			</pre>
+
+			<button>Run</button>
+
+			<aside>
+				<h3>The difference between <code>apply</code> and <code>call()</code></h3>
+
+				<p>When <code>call()</code> or <code>apply()</code> are used to pass arguments to the function <code>call()</code> uses a list of arguments, <code>apply()</code> requires an array for the second parameter.</p>
+
+				<pre>
+					<code>
+var create_element = function(el,id) {
+	var el = document.createElement(el);
+	el.id = id;
+	document.body.appendChild(el);
+}
+
+// Both these lines have the same effect
+create_element.call(create_element, 'div', 'main');
+create_element.apply(create_element, ['div','main']);
+					</code>
+				</pre>
+
+				<button>Run</button>
+			<aside>
+		</section>
+
+		<section>
+			<h2>In a constructor</h2>
+
+			<p>When using a constructor to create objects <code>this</code> refers to the constructor.</p>
+
+			<pre>
+				<code>
+function Person(firstname, birthyear, currentyear) {
+	this.firstname = firstname;
+	this.birthyear = birthyear;
+	this.currentyear = currentyear;
+}
+
+var me = new Person('Derek', 1974, 2013);
+
+console.log('Name: ' + me.firstname + ' Birth year: ' + me.birthyear + ' Current year: ' + me.currentyear);
+
+Person.prototype.age = function() {
+	console.log(this.currentyear - this.birthyear);
+};
+
+me.age();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<section>
+			<h2>In prototypal inheritance</h2>
+
+			<p>When creating objects using prototypal inheritance <code>this</code> references the original object the new one is based on. <code>Object.create</code> is not supported in IE8 and below, and it only accepts one parameter.</p>
+
+			<pre>
+				<code>
+var Person = {
+	name: 'Derek',
+	birthyear: 1974,
+	currentyear: 2013
+}
+
+var me = Object.create(Person);
+
+me.age = function() {
+	console.log(this.currentyear - this.birthyear);
+}
+
+me.age();
+				</code>
+			</pre>
+
+			<button>Run</button>
+		</section>
+
+		<script>
+			var create_script = function() {
+				var el = document.createElement('script');
+
+				var previous = this.previousSibling;
+				if(previous.nodeType === 3) {
+					previous = previous.previousSibling;
+				}
+
+				var previous_child = previous.childNodes[0];
+				if(previous_child.nodeType === 3) {
+					previous_child = previous.childNodes[1];
+				}
+
+				var code = previous_child.innerHTML;
+
+				el.appendChild(document.createTextNode(code));
+
+				document.body.appendChild(el);
+			}
+			,	buttons = document.getElementsByTagName('button')
+			,	i = 0
+			,	ii = buttons.length;
+			;
+
+			for(i; i<ii; i++) {
+				buttons[i].addEventListener('click', create_script, false);
+			}
+		</script>
+	</body>
+</html>
