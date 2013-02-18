@@ -107,10 +107,12 @@
 		<section>
 			<h2>In an function called by an event listener</h2>
 
+			<p>When used in a function called by an event listener <code>this</code> is a reference to the element with the listener on it.</p>
+
 			<pre>
 				<code contenteditable>
-var button = document.getElementById('test')
-,	log_this = function() {
+var button = document.getElementById('test');
+var log_this = function() {
 	console.log(this);
 };
 
@@ -118,7 +120,7 @@ test.addEventListener('click', log_this, false);
 				</code>
 			</pre>
 
-			<button type="button">Run</button> then <input type="button" id="test" value="test">
+			<button type="button">Run</button> then <input type="button" id="test" value="click this button with id of 'test'">
 		</section>
 
 		<section>
