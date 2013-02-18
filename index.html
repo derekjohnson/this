@@ -305,7 +305,9 @@ me.age();
 			;
 
 			for(i; i<ii; i++) {
-				buttons[i].addEventListener('click', create_script, false);
+				buttons[i].addEventListener('click', function() {
+					create_script(this);
+				}, false);
 			}
 		</script>
 	</body>
